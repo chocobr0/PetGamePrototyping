@@ -8,13 +8,12 @@ public class CameraFollow : MonoBehaviour
     public GameObject targetObject;
     private float distanceToTarget;
 
-    // Camera HxW in px: 486x849
+    // Camera WxH in px: 849x486
     void Start()
     {
         distanceToTarget = transform.position.x - targetObject.transform.position.x;
     }
 
-    // Update is called once per frame
     void Update()
     {
         float targetObjectX = targetObject.transform.position.x;

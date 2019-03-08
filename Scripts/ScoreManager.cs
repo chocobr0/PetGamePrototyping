@@ -5,8 +5,8 @@ using UnityEngine.UI;
 
 public class ScoreManager : MonoBehaviour
 {
-    const string glyphs = "!?ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-    public char[] warpedScoreChars = new char[10];
+    const string glyphs = "ABCDEFGHIJKLMNOPQRSTUVWXYZ!?";
+    public char[] warpedChars;
     public Text scoreText;
     public Text hiScoreText;
     public float scoreCount;
@@ -15,7 +15,6 @@ public class ScoreManager : MonoBehaviour
     public bool scoreIncreasing;
     private Kate demonApproachesAt;
 
-    // Use this for initialization
     void Start()
     {
         demonApproachesAt = FindObjectOfType<Kate>();
@@ -26,12 +25,12 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
     void Update()
     {
         if(scoreIncreasing)
         {
             scoreCount += pointsPerSecond * Time.deltaTime;
+            PlayerPrefs.SetFloat("CurrentScore", scoreCount);
         }
 
         if(scoreCount > hiScoreCount)
@@ -42,14 +41,14 @@ public class ScoreManager : MonoBehaviour
 
         if(!DemonIsNear())
         {
-            // Random string generator
-            for (int i = 0; i < warpedScoreChars.Length; i++)
+            warpedChars = new char[6];
+            for (int i = 0; i < warpedChars.Length; i++)
             {
-                warpedScoreChars[i] = glyphs[Random.Range(0, glyphs.Length)];
+                warpedChars[i] = glyphs[Random.Range(0, glyphs.Length)];
             }
-            string warpedScoreText = new string(warpedScoreChars);
-            scoreText.text = "!" + warpedScoreText + "!";
-            hiScoreText.text = "!" + warpedScoreText + "!";
+            string warpedScoreText = new string(warpedChars);
+            scoreText.text = "! " + warpedScoreText + " !";
+            hiScoreText.text = "! " + warpedScoreText + " !";
         }
         else
         {
@@ -58,10 +57,9 @@ public class ScoreManager : MonoBehaviour
         }
     }
 
-    // Is demon close to player?
     bool DemonIsNear()
     {
-        if(demonApproachesAt.seperationDistance < 4) //!!! REFACTOR TO BE MORE DYNAMIC !!!
+        if(demonApproachesAt.seperationDistance < 4)
         {
             return false;
         }

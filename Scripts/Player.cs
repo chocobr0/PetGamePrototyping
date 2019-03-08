@@ -9,14 +9,17 @@ public class Player : MonoBehaviour
     public int playerSpeed = 10;
     public int playerJumpPower = 1250;
     public float moveX;
+    public bool playerInputsEnabled = true;
     public int canJump = 1;
     public int maxJump = 1;
+    public float stunnedWaitTime;
+    public ParallaxScroll parallax;
+    private WaitForSecondsRealtime waitForSecondsRealtime;
     private Rigidbody2D rb;
     private bool facingRight = false;
     private Animator animator;
-    private ScoreManager theScoreManager; //!!! WHEN REFACTORING CODE, PLACE SHIT LIKE THIS INTO A GAME MANAGER SCRIPT INSTEAD OF USING PLAYER!!!
+    private ScoreManager theScoreManager;
 
-    // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
@@ -25,21 +28,25 @@ public class Player : MonoBehaviour
         theScoreManager.scoreIncreasing = true;
     }
 
-    // Update is called once per frame
     void Update()
     {
+        parallax.offset = transform.position.x;
         PlayerMove();
     }
 
     void PlayerMove()
     {
-        moveX = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveX * playerSpeed, gameObject.GetComponent<Rigidbody2D>().velocity.y);
+        if (playerInputsEnabled)
+        {
+            moveX = Input.GetAxis("Horizontal");
+            rb.velocity = new Vector2(moveX * playerSpeed, gameObject.GetComponent<Rigidbody2D>().velocity.y);
 
-        //handles user's jumping mechanic
-        if (Input.GetButtonDown("Jump")){
-            if(canJump >= 1){
-                Jump();
+            if (Input.GetButtonDown("Jump"))
+            {
+                if (canJump >= 1)
+                {
+                    Jump();
+                }
             }
         }
 
@@ -54,7 +61,7 @@ public class Player : MonoBehaviour
         }
 
         //user moving animation
-        if(Mathf.Abs(moveX) > 0 && rb.velocity.y == 0) //!!! consider finding a reasonable epsilon !!! see: https://stackoverflow.com/questions/30216575/why-float-epsilon-and-not-zero
+        if(Mathf.Abs(moveX) > 0 && rb.velocity.y == 0) //!!! consider finding a reasonable epsilon see: https://stackoverflow.com/questions/30216575/why-float-epsilon-and-not-zero
             animator.SetBool("UserStepping", true);
         else
             animator.SetBool("UserStepping", false);

@@ -8,6 +8,8 @@ public class RoomGenerator : MonoBehaviour
     public List<GameObject> currentRooms;
     private float screenWidthInPoints;
 
+    //REMOVE HARD CODE IE "GRASSYFLOORSKIN"
+
     // Start is called before the first frame update
     void Start()
     {
@@ -24,22 +26,11 @@ public class RoomGenerator : MonoBehaviour
 
     void AddRoom(float farthestRoomEndX)
     {
-        //picks a random index of the room type (Prefab) to generate
         int randomRoomIndex = Random.Range(0, availableRooms.Length);
-
-        //creates a room object from the array of available rooms using the random index chosen above
         GameObject room = (GameObject)Instantiate(availableRooms[randomRoomIndex]);
-
-        //get the size of the floor inside the room, which is equal to the room's width
         float roomWidth = room.transform.Find("floor").localScale.x;
-
-        //take the furthest edge of the level so far and add half of the new room's width. new room will start exactly where the previous room ended
         float roomCenter = farthestRoomEndX + roomWidth * 0.5f;
-
-        //sets the position of the room. only need to change the x-coord since all roms have the same y and z coord = 0
         room.transform.position = new Vector3(roomCenter, 0, 0);
-
-        //add room to list of current rooms
         currentRooms.Add(room);
     }
 
@@ -79,10 +70,10 @@ public class RoomGenerator : MonoBehaviour
         foreach(var room in roomsToRemove)
         {
             currentRooms.Remove(room);
-            //Destroy(room);
+
         }
 
-        if(addRooms)
+        if (addRooms)
         {
             AddRoom(farthestRoomEndX);
         }
